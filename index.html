@@ -6,17 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="https://season-chu.github.io">
-  <title>Hexo</title>
+  <title>Season_Chu&#39;s Blogs</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
+  <meta name="description" content="Season_Chu&#39;s Blogs">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Season_Chu&#39;s Blogs">
 <meta property="og:url" content="https://season-chu.github.io/index.html">
-<meta property="og:site_name" content="Hexo">
+<meta property="og:site_name" content="Season_Chu&#39;s Blogs">
+<meta property="og:description" content="Season_Chu&#39;s Blogs">
 <meta property="og:locale" content="en_US">
-<meta property="article:author" content="John Doe">
+<meta property="article:author" content="Season">
 <meta name="twitter:card" content="summary">
   
-    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="Season_Chu&#39;s Blogs" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
@@ -43,7 +45,7 @@
 <div class="intrude-less">
 	<header id="header" class="inner">
 		<a href="" class="profilepic">
-			<img src="/img/alipay.jpg" class="js-avatar show">
+			<img src="/assets/img/touxiang.jpg" class="js-avatar show">
 		</a>
 		<hgroup>
 		  <h1 class="header-author"><a href=""></a></h1>
@@ -101,7 +103,7 @@
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img src="/img/alipay.jpg" class="js-avatar">
+				<img src="/assets/img/touxiang.jpg" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author js-header-author"></h1>
@@ -174,197 +176,9 @@
       
         <p>#<strong>安装labelme环境</strong></p>
 <p>打开Anaconda Prompt, 直接输入pip install labelme即可安装</p>
-<p>#<strong>标注图片的两种方法</strong></p>
-<p>由于课题研究主要针对髋骨附近的股骨进行标注，只需要一种标签即可：</p>
-<p>##方法一</p>
-<p>1）直接在Anaconda Prompt中输入labelme即可；</p>
-<img src="/2021/03/08/labelme%E6%A0%87%E6%B3%A8%E5%90%8E%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E6%95%B0%E6%8D%AE%E9%9B%86/1615342655646.png" class title="This">
-
-<p>2）点击OpenDir选择所要标注的图片目录，标签名自己随意起就好了；</p>
-<img src="/2021/03/08/labelme%E6%A0%87%E6%B3%A8%E5%90%8E%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E6%95%B0%E6%8D%AE%E9%9B%86/1615342774173.png" class title="This">
-
-<p>3）点击File-&gt;Change OutputDir来改变保存json文件的位置；</p>
-<img src="/2021/03/08/labelme%E6%A0%87%E6%B3%A8%E5%90%8E%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E6%95%B0%E6%8D%AE%E9%9B%86/1615343023140.png" class title="This">
-
-<p>4）标注完成后需要生成数据集，首先找到Anaconda环境下的labelme_json_to_dataset.exe文件，在我的电脑上文件路径是D:\anaconda3\Scripts，将labelme_json_to_dataset.exe复制到你想要保存图片的文件夹，然后修改D: \anaconda3\Lib\site-packages\labelme\cl 目录下的json_to_dataset.py文件， 修改为：</p>
-<pre><code>import argparse
-import json
-import os
-import os.path as osp
-import warnings
-
-import PIL.Image
-import yaml
-
-from labelme import utils
-import base64
-
-def main():
-    warnings.warn(&quot;This script is aimed to demonstrate how to convert the\n&quot;
-                  &quot;JSON file to a single image dataset, and not to handle\n&quot;
-                  &quot;multiple JSON files to generate a real-use dataset.&quot;)
-    parser = argparse.ArgumentParser()
-    parser.add_argument(&#39;json_file&#39;)
-    parser.add_argument(&#39;-o&#39;, &#39;--out&#39;, default=None)
-    args = parser.parse_args()
-json_file = args.json_file
-if args.out is None:
-    out_dir = osp.basename(json_file).replace(&#39;.&#39;, &#39;_&#39;)
-    out_dir = osp.join(osp.dirname(json_file), out_dir)
-else:
-    out_dir = args.out
-if not osp.exists(out_dir):
-    os.mkdir(out_dir)
- 
-count = os.listdir(json_file) 
-for i in range(0, len(count)):
-    path = os.path.join(json_file, count[i])
-    if os.path.isfile(path):
-        data = json.load(open(path))
         
-        if data[&#39;imageData&#39;]:
-            imageData = data[&#39;imageData&#39;]
-        else:
-            imagePath = os.path.join(os.path.dirname(path), data[&#39;imagePath&#39;])
-            with open(imagePath, &#39;rb&#39;) as f:
-                imageData = f.read()
-                imageData = base64.b64encode(imageData).decode(&#39;utf-8&#39;)
-        img = utils.img_b64_to_arr(imageData)
-        label_name_to_value = &#123;&#39;_background_&#39;: 0&#125;
-        for shape in data[&#39;shapes&#39;]:
-            label_name = shape[&#39;label&#39;]
-            if label_name in label_name_to_value:
-                label_value = label_name_to_value[label_name]
-            else:
-                label_value = len(label_name_to_value)
-                label_name_to_value[label_name] = label_value
+          <a class="article-more-a" href="/2021/03/08/labelme%E6%A0%87%E6%B3%A8%E5%90%8E%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E6%95%B0%E6%8D%AE%E9%9B%86/#more">more >></a>
         
-        # label_values must be dense
-        label_values, label_names = [], []
-        for ln, lv in sorted(label_name_to_value.items(), key=lambda x: x[1]):
-            label_values.append(lv)
-            label_names.append(ln)
-        assert label_values == list(range(len(label_values)))
-        
-        lbl = utils.shapes_to_label(img.shape, data[&#39;shapes&#39;], label_name_to_value)
-        
-        captions = [&#39;&#123;&#125;: &#123;&#125;&#39;.format(lv, ln)
-            for ln, lv in label_name_to_value.items()]
-        lbl_viz = utils.draw_label(lbl, img, captions)
-        
-        out_dir = osp.basename(count[i]).replace(&#39;.&#39;, &#39;_&#39;)
-        out_dir = osp.join(osp.dirname(count[i]), out_dir)
-        if not osp.exists(out_dir):
-            os.mkdir(out_dir)
- 
-        PIL.Image.fromarray(img).save(osp.join(out_dir, &#39;img.png&#39;))
-        #PIL.Image.fromarray(lbl).save(osp.join(out_dir, &#39;label.png&#39;))
-        utils.lblsave(osp.join(out_dir, &#39;label.png&#39;), lbl)
-        PIL.Image.fromarray(lbl_viz).save(osp.join(out_dir, &#39;label_viz.png&#39;))
- 
-        with open(osp.join(out_dir, &#39;label_names.txt&#39;), &#39;w&#39;) as f:
-            for lbl_name in label_names:
-                f.write(lbl_name + &#39;\n&#39;)
- 
-        warnings.warn(&#39;info.yaml is being replaced by label_names.txt&#39;)
-        info = dict(label_names=label_names)
-        with open(osp.join(out_dir, &#39;info.yaml&#39;), &#39;w&#39;) as f:
-            yaml.safe_dump(info, f, default_flow_style=False)
- 
-        print(&#39;Saved to: %s&#39; % out_dir)
-if __name__ == &#39;__main__&#39;:
-    main()
-</code></pre>
-<p>cd 到labelme_json_to_dataset.exe所在目录，然后执行labelme_json_to_dataset json文件目录；</p>
-<p>该方法缺点是json文件生成的都是单独的文件夹，无法将所有标签放在一个目录，在处理多个图片文件夹的时候较为不便，方法二则可以更为方便的标注数据集；</p>
-<p>##方法二</p>
-<p>1）在所要标注的图片文件中新建labels.txt文件，并在文件内输入如下信息：</p>
-<p><img src="/2021/03/08/labelme%E6%A0%87%E6%B3%A8%E5%90%8E%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E6%95%B0%E6%8D%AE%E9%9B%86/blog\source_posts\labelme标注后如何生成数据集\1615343745846.png" alt="1615343745846"></p>
-<p>bone为自己定义的标签，如果需要多种标签则继续换行添加即可</p>
-<p>2）在输出目录中添加labelme2voc.py文件，文件内容为：</p>
-<pre><code>#!/usr/bin/env python
-
-from __future__ import print_function
-
-import argparse
-import glob
-import os
-import os.path as osp
-import sys
-
-import imgviz
-import numpy as np
-
-import labelme
-</code></pre>
-<p>​<br>    def main():<br>        parser = argparse.ArgumentParser(<br>            formatter_class=argparse.ArgumentDefaultsHelpFormatter<br>        )<br>        parser.add_argument(“input_dir”, help=”input annotated directory”)<br>        parser.add_argument(“output_dir”, help=”output dataset directory”)<br>        parser.add_argument(“–labels”, help=”labels file”, required=True)<br>        parser.add_argument(<br>            “–noviz”, help=”no visualization”, action=”store_true”<br>        )<br>        args = parser.parse_args()<br>    if osp.exists(args.output_dir):<br>        print(“Output directory already exists:”, args.output_dir)<br>        sys.exit(1)<br>    os.makedirs(args.output_dir)<br>    os.makedirs(osp.join(args.output_dir, “JPEGImages”))<br>    os.makedirs(osp.join(args.output_dir, “SegmentationClass”))<br>    os.makedirs(osp.join(args.output_dir, “SegmentationClassPNG”))<br>    if not args.noviz:<br>        os.makedirs(<br>            osp.join(args.output_dir, “SegmentationClassVisualization”)<br>        )<br>    print(“Creating dataset:”, args.output_dir)</p>
-<pre><code>class_names = []
-class_name_to_id = &#123;&#125;
-for i, line in enumerate(open(args.labels).readlines()):
-    class_id = i - 1  # starts with -1
-    class_name = line.strip()
-    class_name_to_id[class_name] = class_id
-    if class_id == -1:
-        assert class_name == &quot;__ignore__&quot;
-        continue
-    elif class_id == 0:
-        assert class_name == &quot;_background_&quot;
-    class_names.append(class_name)
-class_names = tuple(class_names)
-print(&quot;class_names:&quot;, class_names)
-out_class_names_file = osp.join(args.output_dir, &quot;class_names.txt&quot;)
-with open(out_class_names_file, &quot;w&quot;) as f:
-    f.writelines(&quot;\n&quot;.join(class_names))
-print(&quot;Saved class_names:&quot;, out_class_names_file)
-
-for filename in glob.glob(osp.join(args.input_dir, &quot;*.json&quot;)):
-    print(&quot;Generating dataset from:&quot;, filename)
-
-    label_file = labelme.LabelFile(filename=filename)
-
-    base = osp.splitext(osp.basename(filename))[0]
-    out_img_file = osp.join(args.output_dir, &quot;JPEGImages&quot;, base + &quot;.jpg&quot;)
-    out_lbl_file = osp.join(
-        args.output_dir, &quot;SegmentationClass&quot;, base + &quot;.npy&quot;
-    )
-    out_png_file = osp.join(
-        args.output_dir, &quot;SegmentationClassPNG&quot;, base + &quot;.png&quot;
-    )
-    if not args.noviz:
-        out_viz_file = osp.join(
-            args.output_dir,
-            &quot;SegmentationClassVisualization&quot;,
-            base + &quot;.jpg&quot;,
-        )
-
-    with open(out_img_file, &quot;wb&quot;) as f:
-        f.write(label_file.imageData)
-    img = labelme.utils.img_data_to_arr(label_file.imageData)
-
-    lbl, _ = labelme.utils.shapes_to_label(
-        img_shape=img.shape,
-        shapes=label_file.shapes,
-        label_name_to_value=class_name_to_id,
-    )
-    labelme.utils.lblsave(out_png_file, lbl)
-
-    np.save(out_lbl_file, lbl)
-
-    if not args.noviz:
-        viz = imgviz.label2rgb(
-            label=lbl,
-            img=imgviz.rgb2gray(img),
-            font_size=15,
-            label_names=class_names,
-            loc=&quot;rb&quot;,
-        )
-        imgviz.io.imsave(out_viz_file, viz)
-if __name__ == &quot;__main__&quot;:
-    main()        
-</code></pre>
-<p>3）输入以下命令 labelme images –labels labels.txt –nodata –validatelabel exact –config ‘{shift_auto_shape_color: -2}’ ,若无效，手动打开labelme进行标注；</p>
-<p>4)标注完成后执行：python labelme2voc.py images target –labels labels.txt即可</p>
-
       
 
       
@@ -416,7 +230,7 @@ if __name__ == &quot;__main__&quot;:
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2021 John Doe
+    		&copy; 2021 Season
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
